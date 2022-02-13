@@ -12,12 +12,14 @@ knit: (function(input_file, encoding) {
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
+##
+
+
 ```{r}
 #Importing Library and dataset
 library(tidyverse)
 library(plotly)
-raw_data <- read.csv("County_GDP.csv")
-head(raw_data)
+raw_data <- read.csv("Country_GDP.csv")
 ```
 ## Filter, extract, and clean relevant data
 ```{r}
@@ -27,22 +29,48 @@ colnames(filt_data) <- col_nam <- c("Country",
                                         "Country_Code",seq(2001,2020))
 
 plot_data <- data.frame(t(filt_data[,3:22]))
-colnames(plot_data) <- filt_data$Country
+colnames(plot_data) <- filt_data$Country_Code
 
 
 #GDP Per Billion dollars
 plot_data <- plot_data/1000000000
+head(plot_data)
 ```
 
 ## Creating the plot
-```{r}
+```{r, fig.width=9.5}
 fig <- plot_ly(plot_data, type = 'scatter', mode = 'lines') %>%
-  add_trace(x = seq(2001,2020), y = ~Brazil, name = 'Brazil') %>%
-  add_trace(x = seq(2001,2020), y = ~Canada, name = 'Canada') %>%
-  add_trace(x = seq(2001,2020), y = ~China, name = 'China') %>%
-  add_trace(x = seq(2001,2020), y = ~"European Union", name = 'EU') %>%
-  add_trace(x = seq(2001,2020), y = ~Japan, name = 'Japan') %>%
-  add_trace(x = seq(2001,2020), y = ~"United States", name = 'US')
+  add_trace(x = seq(2001,2020), y = ~BRA, name = 'Brazil') %>%
+  add_trace(x = seq(2001,2020), y = ~CAN, name = 'Canada') %>%
+  add_trace(x = seq(2001,2020), y = ~CHN, name = 'China') %>%
+  add_trace(x = seq(2001,2020), y = ~EUU, name = 'EU') %>%
+  add_trace(x = seq(2001,2020), y = ~JPN, name = 'Japan') %>%
+  add_trace(x = seq(2001,2020), y = ~USA, name = 'USA') %>%
+  layout(title = "Major Countries GDP",
+         legend = list(title=list(text='Countries'),x=-0.3,y=0), 
+         xaxis = list(title = 'Date',
+                      rangeslider = list(visible = T)),
+         yaxis = list(title = 'GDP [$Billions]'),
+         plot_bgcolor='#e5ecf6',
+         
+         updatemenus = list(
+           list(
+             buttons = list(
+               list(method = 'restyle',
+                    args = list('visible',list(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)),
+                    label = "All"),
+               
+               list(method = 'restyle',
+                    args = list('visible',list(TRUE,FALSE,FALSE,TRUE,TRUE,FALSE)),
+                    label = "Super Powers"),
+               
+               list(method = 'restyle',
+                    args = list('visible',list(TRUE,FALSE,TRUE,FALSE,FALSE,FALSE)),
+                    label = "North America")))
+           ))
+
 fig
 ```
+
+
 
