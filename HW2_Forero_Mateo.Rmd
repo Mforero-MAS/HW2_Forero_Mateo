@@ -12,16 +12,24 @@ knit: (function(input_file, encoding) {
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-##
+## Source, information, and implementation
+The data set was sourced from the [World Bank website](https://data.worldbank.org/indicator/NY.GDP.MKTP.CD) and was downloaded specifically as a csv. Some clean up in excel was performed to simplify the read command in R but if this data was updated daily (like stock data), this would have been done within R as a function. Several empty rows near the header were deleted and all the years previous to 2001 were deleted. To replicate this work, the link can be followed to download the CSV file used. From there, delete all the rows preceding the main header used for the data set (i.e Country and years). Finally delete all the year columns before 2001. 
 
 
+The information that is being conveyed is showing the rapid rise of GDP between China, the EU, and US. Other major countries are also included to demonstrate that their GDP has been more or less consistent. Plotly was used exclusively in this assignment.
+
+As far as features, 2 were used for this plot. The first feature is the range slider at the bottom of the plot. This would be of more use if the data set was more granular in its dates but it can still be used to isolate specific sections of the x-axis. The second feature used was a drop down menu to pre-select different countries as an alternative to the legend. The full capability of this function was not explored but can potentially allow for a drop down menu that will switch the type of plot being demonstrated (e.g scatter vs box plot). Additionally, if more countries were included, it could be beneficial to use the drop down menu as a means to isolate specific regions (e.g North America, South America, East Asian, ect.) and this plot can easily be expanded for this purpose.
+
+
+
+## Code
 ```{r}
-#Importing Library and dataset
+#Importing Library and data set
 library(tidyverse)
 library(plotly)
 raw_data <- read.csv("Country_GDP.csv")
 ```
-## Filter, extract, and clean relevant data
+### Filter, extract, and clean relevant data
 ```{r}
 c_code <- c("USA","EUU","CHN","JPN","CAN","BRA")
 filt_data <- filter(raw_data,Country.Code %in% c_code)
@@ -37,7 +45,7 @@ plot_data <- plot_data/1000000000
 head(plot_data)
 ```
 
-## Creating the plot
+### Creating the plot
 ```{r, fig.width=9.5}
 fig <- plot_ly(plot_data, type = 'scatter', mode = 'lines') %>%
   add_trace(x = seq(2001,2020), y = ~BRA, name = 'Brazil') %>%
