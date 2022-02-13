@@ -1,0 +1,48 @@
+---
+title: "HW 2"
+author: "Mateo Forero"
+output: html_document
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file, encoding = encoding,
+  output_file = file.path(dirname(input_file), out_dir, 'index.html'))})
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+```{r}
+#Importing Library and dataset
+library(tidyverse)
+library(plotly)
+raw_data <- read.csv("County_GDP.csv")
+head(raw_data)
+```
+## Filter, extract, and clean relevant data
+```{r}
+c_code <- c("USA","EUU","CHN","JPN","CAN","BRA")
+filt_data <- filter(raw_data,Country.Code %in% c_code)
+colnames(filt_data) <- col_nam <- c("Country",
+                                        "Country_Code",seq(2001,2020))
+
+plot_data <- data.frame(t(filt_data[,3:22]))
+colnames(plot_data) <- filt_data$Country
+
+
+#GDP Per Billion dollars
+plot_data <- plot_data/1000000000
+```
+
+## Creating the plot
+```{r}
+fig <- plot_ly(plot_data, type = 'scatter', mode = 'lines') %>%
+  add_trace(x = seq(2001,2020), y = ~Brazil, name = 'Brazil') %>%
+  add_trace(x = seq(2001,2020), y = ~Canada, name = 'Canada') %>%
+  add_trace(x = seq(2001,2020), y = ~China, name = 'China') %>%
+  add_trace(x = seq(2001,2020), y = ~"European Union", name = 'EU') %>%
+  add_trace(x = seq(2001,2020), y = ~Japan, name = 'Japan') %>%
+  add_trace(x = seq(2001,2020), y = ~"United States", name = 'US')
+fig
+```
+
